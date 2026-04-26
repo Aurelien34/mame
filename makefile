@@ -14,7 +14,7 @@
 
 # REGENIE = 1
 # VERBOSE = 1
-# NOWERROR = 1
+NOWERROR = 1
 # IGNORE_GIT = 1
 
 # TARGET = mame
@@ -106,7 +106,8 @@
 
 # QT_HOME = /usr/lib64/qt48/
 
-# SOURCES = src/mame/atari/asteroid.cpp,src/mame/cinematronics/cchasm.cpp
+SOURCES = src/mame/sanyo/phc25.cpp
+SUBSYSTEM = phc25
 
 # SOURCEFILTER = mydrivers.flt
 

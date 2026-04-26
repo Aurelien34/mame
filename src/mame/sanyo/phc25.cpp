@@ -55,6 +55,7 @@ RUN
 #include "softlist_dev.h"
 #include "speaker.h"
 
+#include "TZIOWrapper.h"
 
 namespace {
 
@@ -82,6 +83,10 @@ protected:
 	virtual void port00_w(uint8_t data);
 	virtual uint8_t port40_r();
 	virtual void port40_w(uint8_t data);
+
+	virtual void port_e0_w(uint8_t data);
+	virtual uint8_t port_e1_r();
+	virtual void port_e1_w(uint8_t data);
 
 	required_shared_ptr<uint8_t> m_vram;
 	required_device<cpu_device> m_maincpu;
@@ -272,6 +277,8 @@ void phc25_state::phc25_io(address_map &map)
 	map(0x88, 0x88).portr("KEY8");
 	map(0xc0, 0xc0).w("ay8910", FUNC(ay8910_device::data_w));
 	map(0xc1, 0xc1).rw("ay8910", FUNC(ay8910_device::data_r), FUNC(ay8910_device::address_w));
+	map(0xe0, 0xe0).w(FUNC(phc25_state::port_e0_w));
+	map(0xe1, 0xe1).rw(FUNC(phc25_state::port_e1_r), FUNC(phc25_state::port_e1_w));
 }
 
 
@@ -687,6 +694,21 @@ void phc25_state::phc25j(machine_config &config)
 	// other lines not connected
 }
 
+void phc25_state::port_e0_w(uint8_t data)
+{
+	TZIOWrapper::PortWrite(TZIOWrapper::Port::Command, data);
+}
+
+uint8_t phc25_state::port_e1_r()
+{
+	return TZIOWrapper::PortRead(TZIOWrapper::Port::Data);
+}
+
+void phc25_state::port_e1_w(uint8_t data)
+{
+	TZIOWrapper::PortWrite(TZIOWrapper::Port::Data, data);
+}
+
 void map1010_state::map1010(machine_config &config)
 {
 	phc25j(config);
@@ -750,3 +772,7 @@ ROM_END
 COMP( 1983, phc25,   0,      0,      phc25,   phc25,   phc25_state,   empty_init, "Sanyo", "PHC-25 (Europe)", MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
 COMP( 1983, phc25j,  phc25,  0,      phc25j,  phc25j,  phc25_state,   empty_init, "Sanyo", "PHC-25 (Japan)",  MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
 COMP( 1983, map1010, 0,      0,      map1010, map1010, map1010_state, empty_init, "Seiko", "MAP-1010",        MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE | MACHINE_NOT_WORKING )
+
+#include "TZIOWrapper.cpp"
+#include "TZEngine.cpp"
+#include "TZStack.cpp"
