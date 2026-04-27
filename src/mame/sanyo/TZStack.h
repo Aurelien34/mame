@@ -16,9 +16,7 @@ public:
     void Push(uint16_t val);
     void Push(float val);
     uint8_t Pop8();
-    inline uint8_t Pop8Fast() { return m_aData[--m_topIndex]; }
     uint16_t Pop16();
-    inline uint8_t Pop16Fast() { return (((uint16_t)m_aData[--m_topIndex]) << 8) + (uint16_t)m_aData[--m_topIndex]; }
     float PopFloat();
 
     inline int GetSize() { return m_topIndex; }

@@ -1,5 +1,3 @@
-#include "pico/stdlib.h"
-
 #include "TZEngine.h"
 
 TZStack TZEngine::m_stack;
@@ -9,42 +7,42 @@ bool TZEngine::ExecuteOpCode(OpCode opcode)
 {
     switch (opcode)
     {
-        case OpCode::Drop : Drop(); break;
-        case OpCode::Swap : Swap(); break;
-        case OpCode::Dup : Dup(); break;
-        case OpCode::Drop2 : Drop2(); break;
-        case OpCode::Swap2 : Swap2(); break;
-        case OpCode::Dup2 : Dup2(); break;
-        case OpCode::DropFloat : DropFloat(); break;
-        case OpCode::SwapFloat : SwapFloat(); break;
-        case OpCode::DupFloat : DupFloat(); break;
-        case OpCode::Clear : Clear(); break;
-        case OpCode::Depth8 : Depth8(); break;
-        case OpCode::Mul_8x8 : Mul_8x8(); break;
-        case OpCode::Mul_16x8 : Mul_16x8(); break;
-        case OpCode::Div_16_8 : Div_16_8(); break;
-        case OpCode::LShift_8 : LShift_8(); break;
-        case OpCode::LShift_16 : LShift_16(); break;
-        case OpCode::RShift_8 : RShift_8(); break;
-        case OpCode::RShift_16 : RShift_16(); break;
-        case OpCode::Conv_8_float : Conv_8_float(); break;
-        case OpCode::Conv_16_float : Conv_16_float(); break;
-        case OpCode::Float_Minus : Float_Minus(); break;
-        case OpCode::Float_Mul_8 : Float_Mul_8(); break;
-        case OpCode::Float_Mul_Float : Float_Mul_Float(); break;
+        case OpCode::_Drop : _Drop(); break;
+        case OpCode::_Swap : _Swap(); break;
+        case OpCode::_Dup : _Dup(); break;
+        case OpCode::_Drop2 : _Drop2(); break;
+        case OpCode::_Swap2 : _Swap2(); break;
+        case OpCode::_Dup2 : _Dup2(); break;
+        case OpCode::_DropFloat : _DropFloat(); break;
+        case OpCode::_SwapFloat : _SwapFloat(); break;
+        case OpCode::_DupFloat : _DupFloat(); break;
+        case OpCode::_Clear : _Clear(); break;
+        case OpCode::u8_Depth : u8_Depth(); break;
+        case OpCode::u16_Mul_u8_u8 : u16_Mul_u8_u8(); break;
+        case OpCode::u16_Mul_u16_u8 : u16_Mul_u16_u8(); break;
+        case OpCode::u16_Div_u16_u8 : u16_Div_u16_u8(); break;
+        case OpCode::u8_LShift_u8_u8 : u8_LShift_u8_u8(); break;
+        case OpCode::u16_LShift_u16_u8 : u16_LShift_u16_u8(); break;
+        case OpCode::u8_RShift_u8_u8 : u8_RShift_u8_u8(); break;
+        case OpCode::u16_RShift_u16_u8 : u16_RShift_u16_u8(); break;
+        case OpCode::fl_Conv_u8_float : fl_Conv_u8_float(); break;
+        case OpCode::fl_Conv_u16_float : fl_Conv_u16_float(); break;
+        case OpCode::fl_Minus_fl : fl_Minus_fl(); break;
+        case OpCode::fl_Mul_fl_u8 : fl_Mul_fl_u8(); break;
+        case OpCode::fl_Mul_fl_fl : fl_Mul_fl_fl(); break;
         default : return false;
     }
     return true;
 }
     
 
-void TZEngine::Drop2()
+void TZEngine::_Drop2()
 {
     m_stack.Drop();
     m_stack.Drop();
 }
 
-void TZEngine::Swap2()
+void TZEngine::_Swap2()
 {
     uint16_t val1 = m_stack.Pop16();
     uint16_t val2 = m_stack.Pop16();
@@ -52,7 +50,7 @@ void TZEngine::Swap2()
     Push(val2);
 }
 
-void TZEngine::Dup2()
+void TZEngine::_Dup2()
 {
     uint16_t val = m_stack.Pop16();
     Push(val);
@@ -60,7 +58,7 @@ void TZEngine::Dup2()
 }
 
 
-void TZEngine::DropFloat()
+void TZEngine::_DropFloat()
 {
     m_stack.Drop();
     m_stack.Drop();
@@ -68,7 +66,7 @@ void TZEngine::DropFloat()
     m_stack.Drop();
 }
 
-void TZEngine::SwapFloat()
+void TZEngine::_SwapFloat()
 {
     float val1 = m_stack.PopFloat();
     float val2 = m_stack.PopFloat();
@@ -76,24 +74,24 @@ void TZEngine::SwapFloat()
     Push(val2);
 }
 
-void TZEngine::DupFloat()
+void TZEngine::_DupFloat()
 {
     float val = m_stack.PopFloat();
     Push(val);
     Push(val);
 }
 
-void TZEngine::Clear()
+void TZEngine::_Clear()
 {
     m_stack.Clear();
 }
 
-void TZEngine::Depth8()
+void TZEngine::u8_Depth()
 {
     Push((uint8_t)m_stack.GetSize());
 }
 
-void TZEngine::Mul_8x8()
+void TZEngine::u16_Mul_u8_u8()
 {
     if (GetStackSize() >= 2)
     {
@@ -101,15 +99,19 @@ void TZEngine::Mul_8x8()
     }
 }
 
-void TZEngine::Mul_16x8()
+void TZEngine::u16_Mul_u16_u8()
 {
     if (GetStackSize() >= 3)
     {
-        Push((uint16_t)(((uint16_t)Pop8()) * ((uint16_t)Pop8())));
+        uint16_t val1 = (uint16_t)Pop8();
+        uint16_t val2 = (uint16_t)Pop16();
+        uint16_t res = val1 * val2;
+        Push(res);
+        //Push((uint16_t)(((uint16_t)Pop8()) * ((uint16_t)Pop16())));
     }
 }
 
-void TZEngine::Div_16_8()
+void TZEngine::u16_Div_u16_u8()
 {
     if (GetStackSize() >= 3)
     {
@@ -125,7 +127,7 @@ void TZEngine::Div_16_8()
     }
 }
 
-void TZEngine::LShift_8()
+void TZEngine::u8_LShift_u8_u8()
 {
     if (GetStackSize() >= 2)
     {
@@ -134,7 +136,7 @@ void TZEngine::LShift_8()
     }
 }
 
-void TZEngine::LShift_16()
+void TZEngine::u16_LShift_u16_u8()
 {
     if (GetStackSize() >= 3)
     {
@@ -143,7 +145,7 @@ void TZEngine::LShift_16()
     }
 }
 
-void TZEngine::RShift_8()
+void TZEngine::u8_RShift_u8_u8()
 {
     if (GetStackSize() >= 2)
     {
@@ -152,7 +154,7 @@ void TZEngine::RShift_8()
     }
 }
 
-void TZEngine::RShift_16()
+void TZEngine::u16_RShift_u16_u8()
 {
     if (GetStackSize() >= 3)
     {
@@ -161,7 +163,7 @@ void TZEngine::RShift_16()
     }
 }
 
-void TZEngine::Conv_8_float()
+void TZEngine::fl_Conv_u8_float()
 {
     if (GetStackSize() >= 1)
     {
@@ -169,7 +171,7 @@ void TZEngine::Conv_8_float()
     }
 }
 
-void TZEngine::Conv_16_float()
+void TZEngine::fl_Conv_u16_float()
 {
     if (GetStackSize() >= 1)
     {
@@ -177,7 +179,7 @@ void TZEngine::Conv_16_float()
     }
 }
 
-void TZEngine::Float_Minus()
+void TZEngine::fl_Minus_fl()
 {
     if (GetStackSize() >= 4)
     {
@@ -185,7 +187,7 @@ void TZEngine::Float_Minus()
     }
 }
 
-void TZEngine::Float_Mul_8()
+void TZEngine::fl_Mul_fl_u8()
 {
     if (GetStackSize() >= 4 + 1)
     {
@@ -193,7 +195,7 @@ void TZEngine::Float_Mul_8()
     }
 }
 
-void TZEngine::Float_Mul_Float()
+void TZEngine::fl_Mul_fl_fl()
 {
     if (GetStackSize() >= 4 + 4)
     {
