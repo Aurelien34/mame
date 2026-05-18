@@ -70,6 +70,7 @@ public:
 		, m_centronics(*this, "centronics")
 		, m_cent_data_out(*this, "cent_data_out")
 		, m_cassette(*this, "cassette")
+		, m_sys_dram(*this, "m_sys_dram")
 	{ }
 
 	void phc25(machine_config &config);
@@ -94,6 +95,10 @@ protected:
 private:
 	void phc25_mem(address_map &map) ATTR_COLD;
 	void phc25_io(address_map &map) ATTR_COLD;
+
+	required_shared_ptr<uint8_t> m_sys_dram;
+	uint8_t ram_wait_r(offs_t offset);
+	void ram_wait_w(offs_t offset, uint8_t data);
 
 	uint8_t video_ram_r(offs_t offset);
 	MC6847_GET_CHARROM_MEMBER(char_rom_r);
@@ -244,6 +249,17 @@ void phc25_state::port40_w(uint8_t data)
 	m_port40 = data;
 }
 
+uint8_t phc25_state::ram_wait_r(offs_t offset)
+{
+    m_maincpu->adjust_icount(-1); 
+    return m_sys_dram[offset];
+}
+
+void phc25_state::ram_wait_w(offs_t offset, uint8_t data)
+{
+    m_sys_dram[offset] = data;
+}
+
 /* Memory Maps */
 
 void phc25_state::phc25_mem(address_map &map)
@@ -251,7 +267,7 @@ void phc25_state::phc25_mem(address_map &map)
 	map.unmap_value_high();
 	map(0x0000, 0x5fff).rom().region("maincpu", 0);
 	map(0x6000, 0x77ff).ram().share("videoram");
-	map(0xc000, 0xffff).ram();
+	map(0xc000, 0xffff).ram().rw(FUNC(phc25_state::ram_wait_r), FUNC(phc25_state::ram_wait_w)).share("m_sys_dram");
 }
 
 void phc25_state::phc25_io(address_map &map)
