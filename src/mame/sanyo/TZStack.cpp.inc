@@ -129,3 +129,16 @@ void TZStack::Clear()
     m_topIndex = 0;
     PropagateTopValue();
 }
+
+void TZStack::Reverse(int size)
+{
+    if (size > 0)
+    {
+        for (int i = 0; i < size / 2; ++i)
+        {
+            uint8_t tmp = m_aData[i];
+            m_aData[i] = m_aData[size - 1 - i];
+            m_aData[size - 1 - i] = tmp;
+        }
+    }
+}

@@ -17,6 +17,9 @@
 NOWERROR = 1
 # IGNORE_GIT = 1
 
+SUBSYSTEM=phc25
+SUBTARGET=phc25
+
 # TARGET = mame
 # SUBTARGET = tiny
 # TOOLS = 1

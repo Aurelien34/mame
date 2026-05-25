@@ -1,7 +1,7 @@
 #ifndef __TZSTACK_H__
 #define __TZSTACK_H__
 
-#define TZ_STACK_MAX_SIZE 128
+#define TZ_STACK_MAX_SIZE 16384
 
 #include <stdint.h>
 
@@ -18,6 +18,7 @@ public:
     uint8_t Pop8();
     uint16_t Pop16();
     float PopFloat();
+    void Reverse(int size);
 
     inline int GetSize() { return m_topIndex; }
     inline bool IsEmpty() { return !GetSize(); }

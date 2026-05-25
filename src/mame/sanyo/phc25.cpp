@@ -773,6 +773,8 @@ COMP( 1983, phc25,   0,      0,      phc25,   phc25,   phc25_state,   empty_init
 COMP( 1983, phc25j,  phc25,  0,      phc25j,  phc25j,  phc25_state,   empty_init, "Sanyo", "PHC-25 (Japan)",  MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
 COMP( 1983, map1010, 0,      0,      map1010, map1010, map1010_state, empty_init, "Seiko", "MAP-1010",        MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE | MACHINE_NOT_WORKING )
 
-#include "TZIOWrapper.cpp"
-#include "TZEngine.cpp"
-#include "TZStack.cpp"
+#include "../../3rdparty/lzma/C/lzma2dec.h"
+#include "TZIOWrapper.cpp.inc"
+#include "TZEngine.cpp.inc"
+#include "TZStack.cpp.inc"
+#include "TZDecompress.cpp.inc"

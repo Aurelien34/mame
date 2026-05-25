@@ -21,6 +21,7 @@ public:
         _DupFloat = 8,
         _Clear = 9,
         u8_Depth = 10,
+        u16_Depth = 11,
 
         u16_Mul_u8_u8 = 20,
         u16_Mul_u16_u8 = 21,
@@ -34,7 +35,10 @@ public:
         fl_Conv_u16_float = 31,
         fl_Minus_fl = 32,
         fl_Mul_fl_u8 = 33,
-        fl_Mul_fl_fl = 34
+        fl_Mul_fl_fl = 34,
+
+        _lzma2_Store_content_u16 = 35,
+        u16_lzma2_DecompressAll = 36
         //ENUM_END
     };
 
@@ -60,6 +64,7 @@ public:
     static void _DupFloat(); // Expects 1 float argument (4 bytes) - duplicate it
     static void _Clear(); // Clears the stack
     static void u8_Depth(); // Pushed stack size (1 byte)
+    static void u16_Depth(); // Pushed stack size (2 bytes)
     // Arithmetic operations
     static void u16_Mul_u8_u8(); // Expects 2 bytes - multiply them => 16 bits
     static void u16_Mul_u16_u8(); // Expects 1 short and 1 byte - multiply them => 16 bits
@@ -74,12 +79,19 @@ public:
     static void fl_Minus_fl(); // Expects 1 float - returns -1 * val
     static void fl_Mul_fl_u8(); // Expects 1 float and 1 byte - returns val * byte
     static void fl_Mul_fl_fl(); // Expects 2 floats - multiplies them
+    // Lzma2 operations
+    static void _lzma2_Store_content_u16(); // Store content on the stack as LZMA2 compressed data - size on the top of the stack
+    static void u16_lzma2_DecompressAll(); // Decompress the whole file and return final size
 protected:
     static TZStack m_stack;
+    static uint8_t * m_pLzma2File;
+    static uint16_t m_nLzma2FileLength;
 
 #ifndef TEST_CONTEXT
 public:
     static inline TZStack &GetStack() { return m_stack; }
+    static inline uint8_t *GetLzma2File() { return m_pLzma2File; }
+    static inline uint16_t GetLzma2FileLength() { return m_nLzma2FileLength; }
 #endif
 
 };
